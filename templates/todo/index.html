@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body{
+            position: relative;
+            padding: 0;
+            margin: 0;
+        }
+        a{
+            text-decoration: none;
+            color: white;
+        }
+        h1{
+            width: 90%;
+            margin: auto;
+            margin-top: 2rem;
+            padding: 5px;
+            border-bottom: 3px red solid;
+            text-align: center;
+            color: brown;
+            font-family: 'Courier New', Courier, monospace;
+        }
+        h4{
+            max-width: fit-content;
+            margin: auto;
+            margin-top: 20px;
+            background: brown;
+            padding: 5px;
+            border-radius: 5px;
+            color: #eadc80;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+        .container{
+            {% comment %} border: 1px red solid; {% endcomment %}
+            margin-top: 2rem;
+            padding: 20px;
+            display: flex;
+            flex-wrap: wrap;
+        }
+        .item{
+            border: 2px brown solid;
+            width: 250px;
+            margin: 5px;
+            font-family: Arial, Helvetica, sans-serif;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .item h3{
+            background: brown;
+            color: aliceblue;
+            padding: 5px;
+            margin: 0;
+        }
+        .item p{
+            padding: 5px;
+            text-align: justify;
+        }
+        .actions{
+            /* border: 1px red solid; */
+            background-color: brown;
+            color: #eadc80;
+            display: flex;
+            justify-content: space-between;
+
+        }
+        .action-left,.action-right{
+            padding: 5px;
+        }
+        .action-right{
+            padding-right: 18px;
+
+        }
+        .action-right i{
+            text-align: right;
+            margin-left: 15px;
+            font-size: 1.2rem;
+            min-width: fit-content;
+            color: aliceblue;
+        }
+        .form{            
+            background: rgba(0, 0, 0, 0.9);
+            width: 100%;
+            height: 90vh;
+            position: absolute;
+            top: -100%;
+            left: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+            opacity: 0;
+            /* display: none; */
+            transition: 0.4s;
+            visibility: hidden;
+        }
+        
+        .open-form{
+            /* transition: 1s; */
+            opacity: 1;
+            top: 0;
+            visibility: visible;
+        }
+        #add-btn{
+            cursor: pointer;
+        }
+        .from-container{
+            margin: auto;
+        }
+        .from-container>div{
+            padding: 10px;
+        }
+        input,textarea{
+            min-width: 50vh;
+            padding: 5px;
+            font-size: 1.2rem;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+        button{
+            margin: auto;
+            display: block;
+            font-size: 1.2rem;
+            background-color: brown;
+            color: #eadc80;
+            cursor: pointer;
+            border: none;
+            padding: 5px 20px;
+            border-radius: 50000px;
+        }
+        .submit > button:first-child{
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>MY TO-DO </h1>
+    <h4 id="add-btn"> <i class="fa-regular fa-pen-to-square"></i> Add TO-DO</h4>
+    <div class="container">
+        {% for todo in todos %}
+            <div class="item">
+                <div class="item-top">
+                    <h3>{{forloop.counter}} &nbsp; {{todo.title}}</h3>
+                    <p>
+                        {{todo.description}}
+                    </p>
+                </div>
+                <div class="actions">
+                    <div class="action-left">
+                        {% if todo.is_done %}
+                            <div class="status">Completed </div>
+                        {% endif %}
+                    </div>
+                    <div class="action-right">
+                        {% if not todo.is_done %}
+                            <a href ="{% url 'marking' todo.id %}" >
+                                <i class="fa-solid fa-check" title="Mark as Completed"></i>
+                            </a>
+                        {% endif %}
+                        <a href ="{% url 'delete' todo.id %}" >
+                            <i class="fa-solid fa-trash" title="Delete TO-DO from list"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+
+    <div class="form" id="form">
+        <form action="{% url 'add_todo' %}" method="POST">
+            {% csrf_token %}
+            <div class="from-container">
+                <div class="title">
+                    <input type="text" name="title" placeholder="Title">
+                </div>
+                <div class="description">
+                    <textarea name="description" rows="5" placeholder="Description"></textarea>
+                </div>
+                <div class="submit">
+                    <button type="submit">Submit</button>
+                    <button type="button" id="cancel-btn">Cancel</button>
+                </div>
+            </div>
+        </form>
+        
+
+    </div>
+</body>
+<script>
+    const cancelBtn = document.getElementById('cancel-btn')
+    const addBtn = document.getElementById('add-btn')
+    const form = document.getElementById('form')
+
+    addBtn.addEventListener('click',function(){
+        form.classList.add('open-form')
+    })
+
+    cancelBtn.addEventListener('click',function(){
+        form.classList.remove('open-form')
+    })
+
+</script>
+<script src="https://kit.fontawesome.com/0718d125ef.js" crossorigin="anonymous"></script>
+
+</html>
